@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+	<title>百度一下，你就知道</title>
+	<style>
+		*{box-sizing: border-box;-webkit-tap-highlight-color:transparent;}
+		*::selection{background-color: #e45e2d;color: #fff;}
+		html{-webkit-font-smoothing: antialiased;-webkit-text-size-adjust:100%;font-size: 16px;}
+		body{font-family: Arial,sans-serif,"Microsoft YaHei";}
+		body,form,input,ul,li,p,h1,h2,h3,h4,h5,h6{margin: 0;padding: 0;}
+		template{display: none;}
+		input[type="text"]{border-width: 0;outline: none;}
+		ul{list-style: none;}
+		a:link,a:visited,a:hover,a:active{text-decoration: none;color: #999;}
+		.search{position: fixed;top: 0;width: 100%;background-color: #fff;}
+		.search .form:before {content: '';position: absolute;top: 6px;display: block;width: 101px;height: 33px;line-height:34px;font-size: 20px;text-align: center;color: #333;font-weight: 700;background-image: url('log.gif');background-repeat: no-repeat;background-position: center;background-size: auto 100%;}
+		.search .form:after{content: '';display: table;clear: both;}
+		.search-row{width: 100%;border-bottom: 1px solid #ebebeb;}
+		.search .form{max-width: 770px;position: relative;padding: 10px;}
+		.search-text{padding-right: 100px;padding-left: 111px;}
+		.search-text > input{padding: 6px 7px;width: 100%;height: 34px;font-size: 16px;border: 1px solid #b6b6b6;border-right-width: 0;}
+		.search-btn{position: absolute;top:10px;right: 10px;bottom: 10px;width: 100px;white-space: nowrap;}
+		.search-btn > input{width: 100%;height: 100%;border-width: 0;outline: none;font-size: 14px;letter-spacing: 1px;text-align: center;color: #fff;background-color: #4285f4;cursor: pointer;}
+		.search-btn-hover:hover{background-color: #3b78e7;box-shadow: 1px 1px 1px #ccc;}
+		.search-btn > input:active{background-color: #3367d6;box-shadow: 0 0 0 transparent;}
+		.mobile .search .form:before {top: -45px;height: 100%;width: 100%;max-width: 217px;right: 50%;transform: translate(50%);}
+		.mobile .search-row{padding-top: 50px;}
+		.mobile .form{padding: 5px;}
+		.mobile .search-text{padding-right: 80px;padding-left: 0px;}
+		.mobile .search-btn{    top: 5px;bottom: 5px; right: 5px; width: 80px;}
+		.tip {margin: 80px 0 0 100px;padding: 10px;max-width: 200px;border-radius: 2px;text-align: justify;color: #2a7ae2;background-color: #f8f8f8;}
+		.mobile .tip {
+			margin: auto;
+			margin-top: 100px;
+		}
+		.pointer {position: fixed;top: 0;left: 0;width: 15px;height: 20px;transform: translate(0px,0px);background-image: url('pointer.png');background-repeat: no-repeat;background-position: top left;}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<div class="search">
+			<div class="search-row">
+				<div class="form">
+					<div class="search-text">
+						<input id="search" type="text" name="pplSentence" size="94" placeholder="请输入搜索内容">
+					</div>
+					<div class="search-btn">
+						<input id="btn" type="submit" class="search-btn-hover" value="百度一下">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tip" id="tip"></div>
+	</div>
+	<div>
+		<i class="pointer" id="pointer"></i>
+	</div>
+	<script>
+		(function(win){
+			if (/Mobile/.test(win.navigator.userAgent)) {
+				try {
+					document.querySelector('.search-btn-hover').className='';
+					document.documentElement.className="mobile";
+				} catch(e) {
+					// somthing
+				}
+			}
+			var WD
+			if(location.search){
+				WD = location.search.split('=')[1];
+			} else {
+				return;
+			}
+			var URL = 'https://www.baidu.com/s?wd=';
+			var tips = ['1，把鼠标放到输入框中', '2，请输入你的问题', '3，按下“百度一下”按钮'];
+			var tip = document.getElementById('tip');
+			var search = document.getElementById('search');
+			var searchbox = search.getBoundingClientRect();
+			var btn = document.getElementById('btn');
+			var pointer = document.getElementById('pointer');
+			var position = {
+				top: 0,
+				left: 0
+			}
+			search.value = '';
+			win.addEventListener('resize',function(e){
+				searchbox = search.getBoundingClientRect();
+			})
+			btn.addEventListener('click', function(e){
+				location.href = URL + search.value;
+			});
+
+			handle();
+			function handle(){
+				var i=0;
+				var len = tips.length;
+				var wds = decodeURIComponent(WD).split('');
+				_handle();
+				function _handle(){
+					if(i>=len){
+						reutrn;
+					}
+
+					switch (i) {
+						case 0:
+							tip.textContent = tips[i];
+							slider(searchbox.top+10,searchbox.left+10,function(){
+								i++;
+								setTimeout(_handle, 1000);
+							})
+							break;
+						case 1:
+							tip.textContent = tips[i];
+							search.focus();
+							pointer.style.visibility = 'hidden';
+							setTimeout(function(){
+								inputText(wds,function(){
+									i++;
+									setTimeout(function(){
+										_handle();
+										pointer.style.visibility = 'visible';
+									}, 1000);
+								});
+							}, 1000);
+							break;
+						case 2:
+							tip.textContent = tips[i];
+							slider(searchbox.top+10,searchbox.right+50,function(){
+								setTimeout(function(){
+									btn.click();
+									i++;
+								}, 1000)
+							})
+							break;
+						default:
+							break;
+					}
+				}
+			}
+
+			function slider(top,left,callback) {
+				var props = 'left';
+				var p = left;
+				var T = 0.5;
+				var _top = 1*T*top/left;
+				var _left = 1*T;
+
+				if (top<left) {
+					props = 'top';
+					p = top;
+					_top = 1*T;
+					_left = 1*T*left/top;
+				}
+
+				if (parseInt(position.top)==top || Math.ceil(position.top)==top) {
+					props = 'left';
+					p = left;
+					_top = 0;
+					_left = 10*T;
+				} else if (parseInt(position.left)==left || Math.ceil(position.left)==left) {
+					props = 'top';
+					p = top;
+					_left = 0;
+					top = 10*T;
+				}
+
+				function _slider(){
+					if(position[props] >= p){
+						callback&&callback();
+						return;
+					}
+
+					position.left += _left;
+					position.top += _top;
+					pointer.style.transform = 'translate('+position.left+'px,'+position.top+'px)';
+					requestAnimationFrame(_slider);
+				}
+				_slider()
+			}
+
+			function inputText(wds,callback) {
+				 var i = 0;
+				 var len = wds.length;
+				 var text = '';
+				 _inputText();
+				 function _inputText(){
+				 		if (i >= len) {
+				 			callback&&callback();
+				 			return;
+				 		}
+				 		search.focus();
+				 		text += wds[i];
+				 		i++;
+				 		search.value = text;
+						setTimeout(_inputText,800);
+				 }
+			}
+		})(window);
+	</script>
+</body>
+</html>
