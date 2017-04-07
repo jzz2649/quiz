@@ -92,8 +92,8 @@
 			});
 
 			var WD;
-			if(location.search){
-				WD = location.search.split('=')[1];
+			if(location.search&&(/^\?wd=/).test(location.search)){
+				WD = location.search.replace(/^\?wd=/, '');
 				pointer.style.visibility = 'visible';
 				tip.style.display = 'block';
 				handle();
