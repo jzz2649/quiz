@@ -112,7 +112,7 @@
 							tip.textContent = tips[i];
 							slider(searchbox.top+10,searchbox.left+10,function(){
 								i++;
-								setTimeout(_handle, 1000);
+								setTimeout(_handle, 500);
 							})
 							break;
 						case 1:
@@ -125,9 +125,9 @@
 									setTimeout(function(){
 										_handle();
 										pointer.style.visibility = 'visible';
-									}, 1000);
+									}, 500);
 								});
-							}, 1000);
+							}, 500);
 							break;
 						case 2:
 							tip.textContent = tips[i];
@@ -135,7 +135,7 @@
 								setTimeout(function(){
 									btn.click();
 									i++;
-								}, 1000)
+								},500)
 							})
 							break;
 						default:
@@ -198,7 +198,7 @@
 				 		text += wds[i];
 				 		i++;
 				 		search.value = text;
-						setTimeout(_inputText,800);
+						setTimeout(_inputText,300);
 				 }
 			}
 		})(window);
