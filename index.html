@@ -34,12 +34,12 @@
 		.mobile .form{padding: 5px;}
 		.mobile .search-text{padding-right: 80px;padding-left: 0px;}
 		.mobile .search-btn{    top: 5px;bottom: 5px; right: 5px; width: 80px;}
-		.tip {margin: 80px 0 0 100px;padding: 10px;max-width: 200px;border-radius: 2px;text-align: justify;color: #2a7ae2;background-color: #f8f8f8;}
+		.tip {margin: 80px 0 0 100px;padding: 10px;max-width: 200px;border-radius: 2px;text-align: justify;color: #2a7ae2;background-color: #f8f8f8;display: none;}
 		.mobile .tip {
 			margin: auto;
 			margin-top: 100px;
 		}
-		.pointer {position: fixed;top: 0;left: 0;width: 15px;height: 20px;transform: translate(0px,0px);background-image: url('pointer.png');background-repeat: no-repeat;background-position: top left;}
+		.pointer {position: fixed;top: 0;left: 0;width: 15px;height: 20px;transform: translate(0px,0px);visibility: hidden;background-image: url('pointer.png');background-repeat: no-repeat;background-position: top left;}
 	</style>
 </head>
 <body>
@@ -71,12 +71,7 @@
 					// somthing
 				}
 			}
-			var WD
-			if(location.search){
-				WD = location.search.split('=')[1];
-			} else {
-				return;
-			}
+
 			var URL = 'https://www.baidu.com/s?wd=';
 			var tips = ['1，把鼠标放到输入框中', '2，请输入你的问题', '3，按下“百度一下”按钮'];
 			var tip = document.getElementById('tip');
@@ -96,7 +91,14 @@
 				location.href = URL + search.value;
 			});
 
-			handle();
+			var WD;
+			if(location.search){
+				WD = location.search.split('=')[1];
+				pointer.style.visibility = 'visible';
+				tip.style.display = 'block';
+				handle();
+			}
+
 			function handle(){
 				var i=0;
 				var len = tips.length;
